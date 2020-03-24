@@ -7,6 +7,11 @@ use App\Product;
 
 class ElementController extends Controller
 {
+    private $validationProduct = [
+            'code_of_Product' =>  'required|string|max:255',
+            'type_of_Product' =>  'required|string|max:255',
+            'price' => 'required|numeric',   
+        ];
     /**
      * Display a listing of the resource.
      *
@@ -57,7 +62,8 @@ class ElementController extends Controller
         
         // se il saved è andato a buon fine =(true) allora mi riporterà alla index
         if($saved == true){
-            // una volta che mi salva il dato mi ridarà in show ultimo dato inserito
+            // una volta che mi salva il dato mi ridarà in show l'ultimo dato inserito
+            // al posto di orderBy si può usare anche last();
             $product = Product::orderBy('id','desc')->first();
             return redirect()->route('product.show',compact('product'));
         } else {
@@ -101,9 +107,13 @@ class ElementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Product $product)
     {
-        //
+        // se è vuoto mi darà error 404
+        if (empty($product)) {
+            abort('404');
+        }
+        return view('farm.create', compact('product'));
     }
 
     /**
@@ -113,9 +123,24 @@ class ElementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+    // update è simile a save 
     public function update(Request $request, $id)
     {
-        //
+        $product = Product::find($id);
+        if (empty($product)) {
+            abort('404');
+        }
+        $data = $request->all();
+        $request->validate($this->validationProduct);
+        $updated = $product->update($data);
+
+        if ($updated == true) {
+            $product = Product::find($id);
+            return redirect()->route('product.show', compact('product'));
+        } else {
+            dd('Is not saved');
+        }
     }
 
     /**
@@ -124,8 +149,11 @@ class ElementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Product $product)
     {
-        //
+        $deleted = $product->delete();
+        dd($deleted);
+        
+    
     }
 }
