@@ -38,11 +38,23 @@ class ElementController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        $product = new Product;
-        $product ->code_of_Product = $data['code_of_Product'];
-        $product ->type_of_Product = $data['type_of_Product'];
-        $product ->price = $data['price'];
-        $saved = $product->save();
+        
+        $request->validate([
+            'code_of_Product' =>  'required|string|max:255',
+            'type_of_Product' =>  'required|string|max:255',
+            'price' => 'required|numeric',   
+        ]);
+        // $product ->code_of_Product = $data['code_of_Product'];
+        // $product ->type_of_Product = $data['type_of_Product'];
+        // $product ->price = $data['price'];
+
+        // nuova instanza
+        $newProduct = new Product;
+        // fill prende cio che sta in fillable, risparmiando di scrivere ciò che è commentato sopra
+        $newProduct->fill($data);
+        // saved è come un insert, va a inserire un dato
+        $saved = $newProduct->save();
+        // se il saved è andato a buon fine =(true) allora mi riporterà alla index
         if($saved == true){
             return redirect()->route('product.index');
         }
