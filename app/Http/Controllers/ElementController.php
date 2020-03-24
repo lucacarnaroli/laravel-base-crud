@@ -54,9 +54,14 @@ class ElementController extends Controller
         $newProduct->fill($data);
         // saved è come un insert, va a inserire un dato
         $saved = $newProduct->save();
+        
         // se il saved è andato a buon fine =(true) allora mi riporterà alla index
         if($saved == true){
-            return redirect()->route('product.index');
+            // una volta che mi salva il dato mi ridarà in show ultimo dato inserito
+            $product = Product::orderBy('id','desc')->first();
+            return redirect()->route('product.show',compact('product'));
+        } else {
+            dd('Is not saved');
         }
 
        
@@ -68,9 +73,26 @@ class ElementController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    // 1 METODO 
+    // public function show($id)
+    // {
+    //     $product = Product::find($id);
+         
+    //     if (empty($product)) {
+    //         abort('404');
+    //     }
+    //     return view('farm.show',compact('product'));
+    // }
+
+    // 2 METODO --> IN ALTERNATIVA PIU' SEMPLICE SI POTREBBE SCRIVERE:
+    public function show(Product $product)
     {
-        //
+        // $product = Product::find($id);
+
+        if (empty($product)) {
+            abort('404');
+        }
+        return view('farm.show', compact('product'));
     }
 
     /**
