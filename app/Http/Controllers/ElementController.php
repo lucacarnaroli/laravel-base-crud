@@ -151,9 +151,13 @@ class ElementController extends Controller
      */
     public function destroy(Product $product)
     {
+        $id = $product->id;
         $deleted = $product->delete();
-        dd($deleted);
-        
-    
+        $data = [
+            'id' => $id,
+            'products' => Product::all(),
+        ];
+
+        return view('farm.index',$data);
     }
 }

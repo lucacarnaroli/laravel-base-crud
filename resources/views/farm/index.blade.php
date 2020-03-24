@@ -2,6 +2,12 @@
 
 @section('header')
     <h2>Prodotti alimentari:</h2>
+
+    @if(!empty($id))
+        <div>
+            Hai cancellato il record {{$id}}
+        </div>
+    @endif
 @endsection
 
 @section('main')
