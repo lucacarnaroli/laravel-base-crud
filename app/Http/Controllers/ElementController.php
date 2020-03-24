@@ -14,8 +14,9 @@ class ElementController extends Controller
      */
     public function index()
     {
-        $product = Product::all();
-        dd($product);
+        $products = Product::all();
+        
+        return view('farm.index',compact('products'));
     }
 
     /**
@@ -25,7 +26,7 @@ class ElementController extends Controller
      */
     public function create()
     {
-        return view('farm.index');
+        return view('farm.create');
     }
 
     /**
